@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 from dotenv import load_dotenv
 from langchain.llms import OpenAI
 import os
