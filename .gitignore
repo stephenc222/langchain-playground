@@ -1,3 +1,2 @@
 .env
-chat-logs
-completion-logs
+logs/*
