@@ -2,6 +2,16 @@
 <html>
   <head>
     <title>WebSocket Client</title>
+    <script src="https://cdn.jsdelivr.net/npm/marked@3.0.7/marked.min.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/default.min.css"
+    />
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.min.js"
+      async
+    ></script>
+
     <script>
       // NOTE: just grab this HTML file's full path and load in a browser,
       // and run the "openai-websocket.py" in a separate terminal.
@@ -26,16 +36,33 @@
         const message = document.getElementById("message").value
         if (message !== "") {
           const responseDiv = document.getElementById("response")
-          responseDiv.innerHTML += `<p><b>USER: </b>${message}</p>`
+          responseDiv.innerHTML += `<div><b>USER: </b>${message}</div>`
           socket.send(message)
           document.getElementById("message").value = ""
         }
       }
 
       socket.onmessage = function (event) {
-        const response = event.data
+        const response = event.data.trimStart()
+        let responseHtml = marked(response)
         const responseDiv = document.getElementById("response")
-        responseDiv.innerHTML += `<p><b>AI: </b>${response}</p>`
+        // HACK: quick fix to make "AI: " align but also separated when responding with small code block
+        if (response.startsWith("```")) {
+          responseDiv.innerHTML += `<div><b>AI: </b></div>${responseHtml}`
+        } else {
+          const regex = /<p[^>]*>/
+          const match = responseHtml.match(regex)
+
+          if (match) {
+            const newTag = `${match[0].replace(/<p>/, `<p><b>AI: </b>`)}`
+            responseHtml = responseHtml.replace(match[0], newTag)
+          }
+
+          responseDiv.innerHTML += `<div>${responseHtml}</div>`
+        }
+
+        const codeBlocks = responseDiv.querySelectorAll("code")
+        codeBlocks.forEach(hljs.highlightElement)
       }
     </script>
   </head>
