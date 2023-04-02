@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>WebSocket Client</title>
+    <script>
+      // NOTE: just grab this HTML file's full path and load in a browser,
+      // and run the "openai-websocket.py" in a separate terminal.
+      const HOST = "localhost"
+      const PORT = "8765"
+      const socket = new WebSocket(`ws://${HOST}:${PORT}/`)
+
+      socket.onopen = function (event) {
+        console.log("Connection established")
+      }
+
+      socket.onerror = function (event) {
+        console.error("WebSocket error:", event)
+      }
+
+      socket.onclose = function (event) {
+        console.log("Connection closed")
+      }
+
+      function sendMessage(event) {
+        event.preventDefault() // prevent page reload
+        const message = document.getElementById("message").value
+        if (message !== "") {
+          const responseDiv = document.getElementById("response")
+          responseDiv.innerHTML += `<p><b>USER: </b>${message}</p>`
+          socket.send(message)
+          document.getElementById("message").value = ""
+        }
+      }
+
+      socket.onmessage = function (event) {
+        const response = event.data
+        const responseDiv = document.getElementById("response")
+        responseDiv.innerHTML += `<p><b>AI: </b>${response}</p>`
+      }
+    </script>
+  </head>
+  <body>
+    <h1>WebSocket Client Example</h1>
+    <form onsubmit="sendMessage(event)">
+      <label for="message">Message:</label>
+      <input type="text" id="message" />
+      <button type="submit">Send</button>
+      <div id="response"></div>
+    </form>
+  </body>
+</html>

@@ -16,8 +16,8 @@ start_timestamp = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
 completion_log_filename = f"{start_timestamp}_completion_log.txt"
 
 # Create completion-logs directory if it doesn't exist
-if not os.path.exists("completion-logs"):
-    os.makedirs("completion-logs")
+if not os.path.exists("logs/completion-logs"):
+    os.makedirs("logs/completion-logs")
 
 def get_response(prompt):
     response = openai.Completion.create(
@@ -50,11 +50,11 @@ def main():
                 completion_log += f"{timestamp}: AI: {response}\n"
                 print(f"AI: {response}")
     except KeyboardInterrupt:
-        with open(os.path.join("completion-logs", completion_log_filename), "a") as f:
+        with open(os.path.join("logs/completion-logs", completion_log_filename), "a") as f:
             f.write(completion_log)
         sys.exit(1)
 
-    with open(os.path.join("completions-logs", completion_log_filename), "a") as f:
+    with open(os.path.join("logs/completions-logs", completion_log_filename), "a") as f:
         f.write(completion_log)
 
 if __name__ == "__main__":
