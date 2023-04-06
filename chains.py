@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 
-from dotenv import load_dotenv
+
 from langchain.prompts import PromptTemplate
 from langchain.llms import OpenAI
 from langchain.chains import LLMChain
 import os
 
-load_dotenv()
+
 
 llm = OpenAI(temperature=0.9)
 prompt = PromptTemplate(

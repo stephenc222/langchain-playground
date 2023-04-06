@@ -1,11 +1,9 @@
 #!/usr/bin/env python3
 
-from dotenv import load_dotenv
 from langchain.agents import load_tools
 from langchain.agents import initialize_agent
 from langchain.llms import OpenAI
 
-load_dotenv()
 
 # https://python.langchain.com/en/latest/modules/agents/tools/getting_started.html
 llm = OpenAI(temperature=0)

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-from dotenv import load_dotenv
+
 from langchain.agents import load_tools
 from langchain.agents import initialize_agent
 from langchain.agents import Tool
@@ -12,7 +12,6 @@ import os
 import sys
 import datetime
 
-load_dotenv()
 
 start_timestamp = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
 chat_log_filename = f"{start_timestamp}_llm_chat_log.txt"

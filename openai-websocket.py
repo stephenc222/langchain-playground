@@ -2,9 +2,9 @@ import asyncio
 import websockets
 import openai
 import os
-from dotenv import load_dotenv
 
-load_dotenv()
+
+
 openai.api_key = os.environ["OPENAI_API_KEY"]
 HOST = 'localhost'
 PORT = 8765

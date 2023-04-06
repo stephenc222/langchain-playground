@@ -4,9 +4,9 @@ from langchain.llms import OpenAI
 from langchain.chains import LLMRequestsChain, LLMChain
 
 from langchain.prompts import PromptTemplate
-from dotenv import load_dotenv
 
-load_dotenv()
+
+
 
 template = """Between >>> and <<< are the raw search result text from google.
 Extract the answer to the question '{query}' or say "not found" if the information is not contained.

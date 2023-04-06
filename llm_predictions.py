@@ -1,10 +1,6 @@
 #!/usr/bin/env python3
 
-from dotenv import load_dotenv
 from langchain.llms import OpenAI
-import os
-
-load_dotenv()
 
 llm = OpenAI(temperature=0.9)
 

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from dotenv import load_dotenv
+
 import openai
 import os
 import sys
@@ -8,7 +8,7 @@ import datetime
 
 # NOTE: For a more "normal" ChatGPT type of interaction.
 
-load_dotenv()
+
 
 # Set up OpenAI API key and chat log filename
 openai.api_key = os.environ["OPENAI_API_KEY"]

@@ -1,12 +1,10 @@
 #!/usr/bin/env python3
 
-from dotenv import load_dotenv
 import openai
 import os
 import sys
 import datetime
 
-load_dotenv()
 
 # NOTE: For more unusual and somewhat non-sensical output.
 

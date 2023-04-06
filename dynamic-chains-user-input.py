@@ -1,14 +1,10 @@
 #!/usr/bin/env python3
 
-from dotenv import load_dotenv
 from langchain.prompts import PromptTemplate
 from langchain.chains import LLMChain
 from langchain.agents import load_tools
 from langchain.agents import initialize_agent
 from langchain.llms import OpenAI
-import os
-
-load_dotenv()
 
 
 # First, let's load the language model we're going to use to control the agent.
