@@ -3,3 +3,4 @@ logs/*
 
 *.sql
 *.db
+*.json
