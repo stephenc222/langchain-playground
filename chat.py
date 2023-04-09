@@ -23,7 +23,7 @@ def get_response(messages):
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
         messages=messages,
-        max_tokens=100,
+        max_tokens=3000,
         n=1,
         stop="\nUser:",
         temperature=0.7,
