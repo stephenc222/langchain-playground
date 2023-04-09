@@ -16,9 +16,9 @@ import datetime
 start_timestamp = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
 chat_log_filename = f"{start_timestamp}_llm_chat_log.txt"
 
-# Create llm-chat-logs directory if it doesn't exist
-if not os.path.exists("logs/llm-chat-logs"):
-    os.makedirs("logs/llm-chat-logs")
+# Create llm_chat_logs directory if it doesn't exist
+if not os.path.exists("logs/llm_chat_logs"):
+    os.makedirs("logs/llm_chat_logs")
 
 bash = BashProcess()
 
@@ -57,7 +57,7 @@ def main():
             agent_chain.run(input=prompt)
             message_timestamps.append(timestamp)
     except KeyboardInterrupt:
-        with open(os.path.join("logs/llm-chat-logs", chat_log_filename), "a") as f:
+        with open(os.path.join("logs/llm_chat_logs", chat_log_filename), "a") as f:
             idx = 0
             for message in agent_chain.memory.chat_memory.messages:
                 chat_log += f"{message_timestamps[idx]}: {message.type}: {message.content}\n"
@@ -67,7 +67,7 @@ def main():
 
         sys.exit(1)
 
-    with open(os.path.join("logs/llm-chat-logs", chat_log_filename), "a") as f:
+    with open(os.path.join("logs/llm_chat_logs", chat_log_filename), "a") as f:
         idx = 0
         for message in agent_chain.memory.chat_memory.messages:
             chat_log += f"{message_timestamps[idx]}: {message.type}: {message.content}\n"

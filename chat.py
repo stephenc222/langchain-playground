@@ -15,9 +15,9 @@ openai.api_key = os.environ["OPENAI_API_KEY"]
 start_timestamp = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
 chat_log_filename = f"{start_timestamp}_chat_log.txt"
 
-# Create chat-logs directory if it doesn't exist
-if not os.path.exists("logs/chat-logs"):
-    os.makedirs("logs/chat-logs")
+# Create chat_logs directory if it doesn't exist
+if not os.path.exists("logs/chat_logs"):
+    os.makedirs("logs/chat_logs")
 
 def get_response(messages):
     response = openai.ChatCompletion.create(
@@ -56,11 +56,11 @@ def main():
                 chat_log += f"{timestamp}: AI: {response.content}\n"
                 print(f"AI: {response.content}")
     except KeyboardInterrupt:
-        with open(os.path.join("logs/chat-logs", chat_log_filename), "a") as f:
+        with open(os.path.join("logs/chat_logs", chat_log_filename), "a") as f:
             f.write(chat_log)
         sys.exit(1)
 
-    with open(os.path.join("logs/chat-logs", chat_log_filename), "a") as f:
+    with open(os.path.join("logs/chat_logs", chat_log_filename), "a") as f:
         f.write(chat_log)
 
 if __name__ == "__main__":

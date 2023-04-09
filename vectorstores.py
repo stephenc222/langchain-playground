@@ -20,8 +20,8 @@ else:
 nltk.download('punkt')
 nltk.download('averaged_perceptron_tagger')
 
-space_loader = UnstructuredFileLoader("./example-space.html")
-state_of_the_union_loader = UnstructuredFileLoader("./example-state-of-the-union.html")
+space_loader = UnstructuredFileLoader("./example_space.html")
+state_of_the_union_loader = UnstructuredFileLoader("./example_state_of_the_union.html")
 
 space_docs = space_loader.load()
 state_of_the_union_docs = state_of_the_union_loader.load()
