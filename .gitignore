@@ -4,3 +4,4 @@ logs/*
 *.sql
 *.db
 *.json
+__pycache__
