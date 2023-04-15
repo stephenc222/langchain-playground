@@ -1,4 +1,5 @@
 from tiktoken import get_encoding
+from langchain.schema import ChatMessage
 
 ENCODING = "cl100k_base"
 
@@ -8,6 +9,9 @@ class SlidingContextWindow:
         self.model = model
         self.encoding = get_encoding(ENCODING)
         self.messages = []
+    def get_context_dict(self):
+        """Get the current context for the model as a dictionary."""
+        return {"messages": self.messages}
 
     def num_tokens_from_string(self, string: str) -> int:
         """Returns the number of tokens in a text string."""
@@ -38,4 +42,13 @@ class SlidingContextWindow:
     def get_context(self):
         """Get the current context for the model."""
         return self.messages
+    def get_langchain_context(self):
+        """Get the current context for the model."""
+        # Convert messages to the expected format of ChatMessage
+        chat_messages = [
+            ChatMessage(role=msg['role'], content=msg['content'])
+            for msg in self.messages
+        ]
+        return chat_messages
+
 

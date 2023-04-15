@@ -3,17 +3,22 @@
 from langchain.agents import load_tools
 from langchain.agents import initialize_agent
 from langchain.agents import Tool
-from langchain.memory import ConversationBufferMemory
 from langchain.chat_models import ChatOpenAI
 from langchain.utilities import SerpAPIWrapper
 from langchain.utilities import BashProcess
 from langchain.chat_models import ChatOpenAI
+from tiktoken import get_encoding
 import os
 import sys
 import datetime
+from sliding_context_window import SlidingContextWindow
 
+# Constants
+MAX_TOKENS = 1500
+MODEL = "gpt-3.5-turbo"
+ENCODING = "cl100k_base"
 
-start_timestamp = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
+start_timestamp = datetime.datetime.now().strftime('%Y-%m-%d_%H')
 chat_log_filename = f"{start_timestamp}_llm_chat_log.txt"
 
 # Create llm_chat_logs directory if it doesn't exist
@@ -22,26 +27,28 @@ if not os.path.exists("logs/llm_chat_logs"):
 
 bash = BashProcess()
 
-memory = ConversationBufferMemory(memory_key="chat_history", return_messages=True)
+# Initialize SlidingContextWindow
+context_window = SlidingContextWindow(MAX_TOKENS, MODEL)
+context_window.encoding = get_encoding(ENCODING)
 
-llm=ChatOpenAI(temperature=0)
+llm = ChatOpenAI(temperature=0)
 
 search = SerpAPIWrapper()
 
 tools = [
     Tool(
-        name = "Bash Commands",
+        name="Bash Commands",
         func=bash.run,
         description="useful for running bash commands inside a unix terminal"
     ),
     Tool(
-        name = "Current Search",
+        name="Current Search",
         func=search.run,
         description="useful for when you need to answer questions about current events or the current state of the world. the input to this should be a single search term."
     )
 ]
 
-agent_chain = initialize_agent(tools, llm, agent="chat-conversational-react-description", verbose=True, memory=memory)
+agent_chain = initialize_agent(tools, llm, agent="chat-conversational-react-description", verbose=True)
 
 def main():
     chat_log = ""
@@ -54,28 +61,34 @@ def main():
             timestamp = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
             message_timestamps.append(timestamp)
             prompt = user_input.strip("> ")
-            agent_chain.run(input=prompt)
+            context_window.add_message("user", prompt)
+            
+            # Include 'chat_history' key in the inputs
+            inputs = {
+                'input': prompt,
+                'chat_history': context_window.get_langchain_context()
+            }
+            
+            response = agent_chain.run(inputs)
+            context_window.add_message("assistant", response)
             message_timestamps.append(timestamp)
+            print('AI:',response)
+
     except KeyboardInterrupt:
         with open(os.path.join("logs/llm_chat_logs", chat_log_filename), "a") as f:
             idx = 0
-            for message in agent_chain.memory.chat_memory.messages:
-                chat_log += f"{message_timestamps[idx]}: {message.type}: {message.content}\n"
+            for message in context_window.get_context():
+                chat_log += f"{message_timestamps[idx]}: {message['role']}: {message['content']}\n"
                 idx += 1
- 
             f.write(chat_log)
-
         sys.exit(1)
 
     with open(os.path.join("logs/llm_chat_logs", chat_log_filename), "a") as f:
         idx = 0
-        for message in agent_chain.memory.chat_memory.messages:
-            chat_log += f"{message_timestamps[idx]}: {message.type}: {message.content}\n"
+        for message in context_window.get_context():
+            chat_log += f"{message_timestamps[idx]}: {message['role']}: {message['content']}\n"
             idx += 1
-
         f.write(chat_log)
 
 if __name__ == "__main__":
     main()
-
-
