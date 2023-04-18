@@ -7,7 +7,7 @@ from prompt_toolkit.styles import Style
 from sliding_context_window import SlidingContextWindow
 
 # NOTE: For a more "normal" ChatGPT type of interaction.
-# TODO: make this full screen, syntax highlighting, easier to paste in chunks of code
+# TODO: make this full screen, syntax highlighting, easier to paste in chunks of code.
 
 MAX_TOKENS = 1500
 COMPLETION_TOKENS = 2500
@@ -46,7 +46,8 @@ class ChatPrompt:
         context_window = SlidingContextWindow(MAX_TOKENS, MODEL)
         try:
             while True:
-                text = self.session.prompt(message='> ')
+                text = self.session.prompt(
+                    message='> ', vi_mode=True, multiline=True)
                 if text == "quit":
                     break
                 context_window.add_message("user", f"User: {text}\nAI:")
