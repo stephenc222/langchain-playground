@@ -17,9 +17,13 @@ openai.api_key = os.environ["OPENAI_API_KEY"]
 start_timestamp = datetime.datetime.now().strftime('%Y-%m-%d_%H')
 chat_log_filename = f"{start_timestamp}_chat_log.txt"
 
+chat_log_dir = os.path.join(os.path.abspath(
+    os.path.dirname(__file__)), 'logs/chat_logs')
+
 # Create chat_logs directory if it doesn't exist
-if not os.path.exists("logs/chat_logs"):
-    os.makedirs("logs/chat_logs")
+if not os.path.exists(chat_log_dir):
+    os.makedirs(chat_log_dir)
+
 
 def get_response(messages):
     response = openai.ChatCompletion.create(
@@ -31,6 +35,7 @@ def get_response(messages):
         temperature=0.7,
     )
     return response.choices[0].message
+
 
 def main():
     chat_log = ""
@@ -54,12 +59,13 @@ def main():
                 chat_log += f"{timestamp}: AI: {response.content}\n"
                 print(f"AI: {response.content}")
     except KeyboardInterrupt or Exception:
-        with open(os.path.join("logs/chat_logs", chat_log_filename), "a") as f:
+        with open(os.path.join(chat_log_dir, chat_log_filename), "a") as f:
             f.write(chat_log)
         sys.exit(1)
 
-    with open(os.path.join("logs/chat_logs", chat_log_filename ), "a") as f:
+    with open(os.path.join(chat_log_dir, chat_log_filename), "a") as f:
         f.write(chat_log)
+
 
 if __name__ == "__main__":
     main()

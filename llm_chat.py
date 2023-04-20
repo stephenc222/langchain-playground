@@ -22,8 +22,13 @@ start_timestamp = datetime.datetime.now().strftime('%Y-%m-%d_%H')
 chat_log_filename = f"{start_timestamp}_llm_chat_log.txt"
 
 # Create llm_chat_logs directory if it doesn't exist
-if not os.path.exists("logs/llm_chat_logs"):
-    os.makedirs("logs/llm_chat_logs")
+chat_log_dir = os.path.join(os.path.abspath(
+    os.path.dirname(__file__)), 'logs/llm_chat_logs')
+
+# Create chat_logs directory if it doesn't exist
+if not os.path.exists(chat_log_dir):
+    os.makedirs(chat_log_dir)
+
 
 bash = BashProcess()
 
@@ -48,7 +53,9 @@ tools = [
     )
 ]
 
-agent_chain = initialize_agent(tools, llm, agent="chat-conversational-react-description", verbose=True)
+agent_chain = initialize_agent(
+    tools, llm, agent="chat-conversational-react-description", verbose=True)
+
 
 def main():
     chat_log = ""
@@ -62,20 +69,20 @@ def main():
             message_timestamps.append(timestamp)
             prompt = user_input.strip("> ")
             context_window.add_message("user", prompt)
-            
+
             # Include 'chat_history' key in the inputs
             inputs = {
                 'input': prompt,
                 'chat_history': context_window.get_langchain_context()
             }
-            
+
             response = agent_chain.run(inputs)
             context_window.add_message("assistant", response)
             message_timestamps.append(timestamp)
-            print('AI:',response)
+            print('AI:', response)
 
     except KeyboardInterrupt:
-        with open(os.path.join("logs/llm_chat_logs", chat_log_filename), "a") as f:
+        with open(os.path.join(chat_log_dir, chat_log_filename), "a") as f:
             idx = 0
             for message in context_window.get_context():
                 chat_log += f"{message_timestamps[idx]}: {message['role']}: {message['content']}\n"
@@ -83,12 +90,13 @@ def main():
             f.write(chat_log)
         sys.exit(1)
 
-    with open(os.path.join("logs/llm_chat_logs", chat_log_filename), "a") as f:
+    with open(os.path.join(chat_log_dir, chat_log_filename), "a") as f:
         idx = 0
         for message in context_window.get_context():
             chat_log += f"{message_timestamps[idx]}: {message['role']}: {message['content']}\n"
             idx += 1
         f.write(chat_log)
+
 
 if __name__ == "__main__":
     main()
