@@ -1,4 +1,4 @@
-# LangChain Tutorial
+# LangChain Playground
 
 ## Overview
 
